@@ -28,6 +28,14 @@ A free account works; the build expires after 7 days and needs a re-install.
 | **Add** | Amount, one of eight categories, date, optional note. |
 | **Insights** | Month total, spend per day so far, and a share-of-spend bar per category. Step back through previous months. |
 
+The share button on **Expenses** exports everything as CSV — mail it to
+yourself, drop it in Files, open it in Numbers. Columns are
+`Date,Category,Note,Amount`, oldest first. Amounts are plain numbers with a
+dot decimal and no currency symbol or thousands separator, so spreadsheets
+read them as numbers rather than text. Notes are quoted and any embedded
+quotes doubled, so commas, quotes and line breaks inside a note survive
+intact.
+
 The strip above the tab bar always shows the month-to-date total.
 
 ## Layout

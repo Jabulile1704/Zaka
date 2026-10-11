@@ -25,6 +25,22 @@ struct ExpenseListView: View {
             }
             .background { AmbientBackground() }
             .navigationTitle("Expenses")
+            .toolbar {
+                if !expenses.isEmpty {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        let file = ExpensesCSV(expenses: expenses)
+                        ShareLink(
+                            item: file,
+                            preview: SharePreview(
+                                file.filename,
+                                image: Image(systemName: "tablecells")
+                            )
+                        ) {
+                            Label("Export CSV", systemImage: "square.and.arrow.up")
+                        }
+                    }
+                }
+            }
         }
         .sheet(item: $editing) { expense in
             ExpenseFormView(editing: expense) { editing = nil }
