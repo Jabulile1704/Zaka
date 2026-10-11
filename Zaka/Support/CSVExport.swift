@@ -69,8 +69,11 @@ nonisolated struct ExpensesCSV: Transferable {
     }
 
     static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .commaSeparatedText) { csv in
-            Data(csv.text.utf8)
+        FileRepresentation(exportedContentType: .commaSeparatedText) { csv in
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent(csv.filename)
+            try Data(csv.text.utf8).write(to: url, options: .atomic)
+            return SentTransferredFile(url)
         }
         .suggestedFileName { $0.filename }
     }
