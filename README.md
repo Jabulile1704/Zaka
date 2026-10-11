@@ -25,7 +25,7 @@ A free account works; the build expires after 7 days and needs a re-install.
 | Screen | What it does |
 | --- | --- |
 | **Expenses** | Everything you've logged, grouped by day with a per-day total. Tap a row to edit, swipe to delete. |
-| **Add** | Amount, one of fifteen categories, date, optional note. |
+| **Add** | Amount, one of sixteen categories, date, optional note. |
 | **Insights** | Month total, spend per day so far, and a share-of-spend bar per category. Step back through previous months. |
 
 The share button on **Expenses** exports everything as CSV — mail it to
@@ -48,7 +48,7 @@ Zaka/
   ZakaApp.swift             App entry, SwiftData container, splash gate
   Models/
     Expense.swift           The @Model record
-    ExpenseCategory.swift   The fifteen categories, with icon and colour
+    ExpenseCategory.swift   The sixteen categories, with icon and colour
   Support/
     Money.swift             Rand formatting and keypad parsing
     DayGroup.swift          Buckets expenses into calendar days

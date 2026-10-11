@@ -5,6 +5,7 @@ nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
     case groceries
     case transport
     case rent
+    case utilities
     case health
     case wifi
     case subscriptions
@@ -35,6 +36,7 @@ nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
         case .groceries: "Groceries"
         case .transport: "Transport"
         case .rent: "Rent"
+        case .utilities: "Utilities"
         case .health: "Health"
         case .wifi: "WiFi"
         case .subscriptions: "Subscriptions"
@@ -55,6 +57,7 @@ nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
         case .groceries: "basket.fill"
         case .transport: "car.fill"
         case .rent: "house.fill"
+        case .utilities: "bolt.fill"
         case .health: "cross.case.fill"
         case .wifi: "wifi"
         case .subscriptions: "repeat"
@@ -75,6 +78,7 @@ nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
         case .groceries: .green
         case .transport: .blue
         case .rent: .brown
+        case .utilities: Color(hex: "F2A93B")
         case .health: .red
         case .wifi: .cyan
         case .subscriptions: .purple
