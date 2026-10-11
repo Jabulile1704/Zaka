@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension Color {
-    init(hex: String) {
+    nonisolated init(hex: String) {
         var value: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&value)
         self.init(
