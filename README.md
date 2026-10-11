@@ -79,7 +79,16 @@ It writes the light and dark 1024×1024 PNGs straight into the asset catalog.
 The splash is an ordinary SwiftUI view, not a launch screen. iOS launch
 screens are static by definition — the system draws them before any app code
 runs — so `UILaunchScreen` is just a flat colour (`LaunchBackground`, matching
-the splash), and `SplashView` animates on top of it once the app is up. The
-local store opens instantly, so the animation is a deliberate pause rather
-than cover for real work: change `duration` on `SplashView`, or tap to skip.
-It reduces to a plain fade when Reduce Motion is on.
+the splash), and `SplashView` animates on top of it once the app is up.
+
+It plays **once per install**. After that it is pure delay between you and
+your expenses, so `LaunchGate` records a `hasSeenSplash` flag and steps over
+it on every later launch. Deleting and reinstalling brings it back; so does
+
+```bash
+xcrun simctl spawn booted defaults delete com.jabulile.zaka hasSeenSplash
+```
+
+on a simulator. The local store opens instantly, so the animation never
+covers real work: it is tap-to-skip, its length is `duration` on
+`SplashView`, and it reduces to a plain fade when Reduce Motion is on.
