@@ -33,8 +33,11 @@ The strip above the tab bar always shows the month-to-date total.
 ## Layout
 
 ```
+Info.plist                  Bundle keys and the launch-screen colour
+Tools/
+  GenerateAppIcon.swift     Draws the app icon to PNG
 Zaka/
-  ZakaApp.swift            App entry, SwiftData container
+  ZakaApp.swift             App entry, SwiftData container, splash gate
   Models/
     Expense.swift           The @Model record
     ExpenseCategory.swift   The eight categories, with icon and colour
@@ -42,11 +45,14 @@ Zaka/
     Money.swift             Rand formatting and keypad parsing
     DayGroup.swift          Buckets expenses into calendar days
     AmbientBackground.swift The colour wash the glass refracts
+    CoinPalette.swift       Coin and banknote colours
   Views/
     RootView.swift          Tab shell and the month-total accessory
     ExpenseListView.swift   Expenses tab
     ExpenseFormView.swift   Add and Edit (same view, two modes)
     InsightsView.swift      Insights tab
+    CoinMark.swift          The coin and banknote marks
+    SplashView.swift        The launch animation
 ```
 
 ## Notes
@@ -56,3 +62,24 @@ Amounts accept either separator: on a South African keypad the decimal key is
 and means 1234. Display is always `R1,234.56` regardless of device region.
 
 Currency is fixed to Rand in `Money.swift`; change `symbol` there to switch it.
+
+## Icon and launch animation
+
+The app icon is a two-tone rand coin — nickel ring, brass centre, milled
+edge — drawn in the style of South African coinage rather than copied from
+any real coin. It is vector art with no binary source to lose, so it lives in
+`Tools/GenerateAppIcon.swift`. Re-run that after any change:
+
+```bash
+swift Tools/GenerateAppIcon.swift
+```
+
+It writes the light and dark 1024×1024 PNGs straight into the asset catalog.
+
+The splash is an ordinary SwiftUI view, not a launch screen. iOS launch
+screens are static by definition — the system draws them before any app code
+runs — so `UILaunchScreen` is just a flat colour (`LaunchBackground`, matching
+the splash), and `SplashView` animates on top of it once the app is up. The
+local store opens instantly, so the animation is a deliberate pause rather
+than cover for real work: change `duration` on `SplashView`, or tap to skip.
+It reduces to a plain fade when Reduce Motion is on.
