@@ -3,10 +3,10 @@ import SwiftData
 
 @Model
 final class Expense {
-    var amount: Double
-    var categoryRaw: String
-    var date: Date
-    var note: String
+    var amount: Double = 0
+    var categoryRaw: String = ExpenseCategory.other.rawValue
+    var date: Date = Date.now
+    var note: String = ""
 
     init(amount: Double, category: ExpenseCategory, date: Date = .now, note: String = "") {
         self.amount = amount

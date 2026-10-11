@@ -100,3 +100,36 @@ xcrun simctl spawn booted defaults delete com.jabulile.zaka hasSeenSplash
 on a simulator. The local store opens instantly, so the animation never
 covers real work: it is tap-to-skip, its length is `duration` on
 `SplashView`, and it reduces to a plain fade when Reduce Motion is on.
+
+## iCloud sync
+
+The code is in place but **sync is off**, because it cannot work on a free
+Apple account. Attempting it fails at signing time:
+
+> Personal development teams do not support the iCloud and Push
+> Notifications capabilities.
+
+So the model, the container and the entitlements are all CloudKit-ready and
+the app runs local-only until the account allows otherwise. The CloudKit
+configuration sits behind the `ZAKA_CLOUDKIT` compile flag rather than a
+runtime check, because CloudKit fails *fatally* when the entitlement is
+absent — the process dies at launch, and the failure is asynchronous, so it
+cannot be caught with `try?`.
+
+To turn it on, once enrolled in the Apple Developer Program:
+
+1. Set `CODE_SIGN_ENTITLEMENTS = Zaka.entitlements` on the target. The file
+   is already in the repo and declares the CloudKit container
+   `iCloud.com.jabulile.zaka` plus `aps-environment`.
+2. Add `remote-notification` to `UIBackgroundModes` in `Info.plist`, or the
+   device only syncs while the app is open.
+3. Add `ZAKA_CLOUDKIT` to `SWIFT_ACTIVE_COMPILATION_CONDITIONS`.
+
+All three are needed. With the flag on and the entitlement missing the app
+crashes on launch; with the entitlement on and the flag off it simply stays
+local.
+
+Every property on `Expense` carries a default value, which CloudKit requires
+— it has no concept of a non-optional column without one. That change is
+already committed and migrates an existing local store in place, verified
+with data present.
