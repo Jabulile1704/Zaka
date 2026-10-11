@@ -4,7 +4,7 @@ import SwiftData
 @Model
 final class Expense {
     var amount: Double = 0
-    var categoryRaw: String = ExpenseCategory.other.rawValue
+    var categoryRaw: String = ExpenseCategory.others.rawValue
     var date: Date = Date.now
     var note: String = ""
 
@@ -16,7 +16,7 @@ final class Expense {
     }
 
     var category: ExpenseCategory {
-        get { ExpenseCategory(rawValue: categoryRaw) ?? .other }
+        get { ExpenseCategory.stored(categoryRaw) }
         set { categoryRaw = newValue.rawValue }
     }
 

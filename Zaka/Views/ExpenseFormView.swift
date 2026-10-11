@@ -11,7 +11,7 @@ struct ExpenseFormView: View {
     @Environment(\.modelContext) private var context
 
     @State private var amountText = ""
-    @State private var category: ExpenseCategory = .food
+    @State private var category: ExpenseCategory = .takeaways
     @State private var date: Date = .now
     @State private var note = ""
     @State private var saveCount = 0
@@ -193,7 +193,7 @@ struct ExpenseFormView: View {
 
     private func reset() {
         amountText = ""
-        category = .food
+        category = .takeaways
         date = .now
         note = ""
         focus = nil

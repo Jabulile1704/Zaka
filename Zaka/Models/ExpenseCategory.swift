@@ -1,53 +1,80 @@
 import SwiftUI
 
 nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
-    case food
-    case groceries
+    case takeaways
     case transport
-    case bills
-    case shopping
+    case rent
     case health
-    case fun
-    case other
+    case wifi
+    case subscriptions
+    case shopping
+    case accounts
+    case travelling
+    case airtime
+    case haircut
+    case others = "other"
 
     var id: String { rawValue }
 
+    static func stored(_ raw: String) -> ExpenseCategory {
+        ExpenseCategory(rawValue: raw) ?? retired[raw] ?? .others
+    }
+
+    private static let retired: [String: ExpenseCategory] = [
+        "food": .takeaways,
+        "groceries": .takeaways,
+        "bills": .accounts,
+        "fun": .others
+    ]
+
     var label: String {
         switch self {
-        case .food: "Food"
-        case .groceries: "Groceries"
+        case .takeaways: "Takeaways"
         case .transport: "Transport"
-        case .bills: "Bills"
-        case .shopping: "Shopping"
+        case .rent: "Rent"
         case .health: "Health"
-        case .fun: "Fun"
-        case .other: "Other"
+        case .wifi: "WiFi"
+        case .subscriptions: "Subscriptions"
+        case .shopping: "Shopping"
+        case .accounts: "Accounts"
+        case .travelling: "Travelling"
+        case .airtime: "Airtime"
+        case .haircut: "Haircut"
+        case .others: "Others"
         }
     }
 
     var symbol: String {
         switch self {
-        case .food: "fork.knife"
-        case .groceries: "basket.fill"
+        case .takeaways: "takeoutbag.and.cup.and.straw.fill"
         case .transport: "car.fill"
-        case .bills: "bolt.fill"
-        case .shopping: "bag.fill"
+        case .rent: "house.fill"
         case .health: "cross.case.fill"
-        case .fun: "music.note"
-        case .other: "square.grid.2x2.fill"
+        case .wifi: "wifi"
+        case .subscriptions: "repeat"
+        case .shopping: "bag.fill"
+        case .accounts: "creditcard.fill"
+        case .travelling: "airplane"
+        case .airtime: "antenna.radiowaves.left.and.right"
+        case .haircut: "scissors"
+        case .others: "square.grid.2x2.fill"
         }
     }
 
     var tint: Color {
         switch self {
-        case .food: .orange
-        case .groceries: .green
+        case .takeaways: .orange
         case .transport: .blue
-        case .bills: .yellow
-        case .shopping: .pink
+        case .rent: .brown
         case .health: .red
-        case .fun: .purple
-        case .other: .gray
+        case .wifi: .cyan
+        case .subscriptions: .purple
+        case .shopping: .pink
+        case .accounts: .indigo
+        case .travelling: .teal
+        case .airtime: .green
+        case .haircut: .yellow
+        case .others: .gray
         }
     }
 }
