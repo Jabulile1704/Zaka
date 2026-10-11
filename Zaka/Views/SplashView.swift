@@ -1,16 +1,5 @@
 import SwiftUI
 
-/// The opening animation: the coin spins to rest while notes fan out beneath
-/// it and two loose coins drift up.
-///
-/// iOS launch screens are static by definition — the system draws them before
-/// any of our code runs — so this is an ordinary view shown over the app. The
-/// real launch screen is set to the same background colour, so the hand-off
-/// from one to the other is invisible.
-///
-/// The store is local and opens instantly, so this is a deliberate pause
-/// rather than cover for real work. `duration` is the whole of it, and a tap
-/// skips straight through.
 struct SplashView: View {
     var duration: Duration = .milliseconds(1950)
     let onFinish: () -> Void
@@ -38,8 +27,6 @@ struct SplashView: View {
         .task(run)
     }
 
-    // MARK: - Pieces
-
     private var centrepiece: some View {
         VStack(spacing: 24) {
             SpinningCoin(angle: spin, size: 132, palette: palette)
@@ -60,8 +47,6 @@ struct SplashView: View {
         .padding(.bottom, 188)
     }
 
-    /// The notes fan out from behind the coin and settle; the small coins rise
-    /// past them, turning slowly.
     private var moneyFan: some View {
         ZStack(alignment: .bottom) {
             Color.clear
@@ -89,8 +74,6 @@ struct SplashView: View {
             .scaleEffect(fanned ? 1 : 0.84)
     }
 
-    // MARK: - Timing
-
     @Sendable private func run() async {
         if reduceMotion {
             withAnimation(.easeOut(duration: 0.45)) {
@@ -100,8 +83,6 @@ struct SplashView: View {
             }
             try? await Task.sleep(for: .milliseconds(1000))
         } else {
-            // Three turns, easing to a stop face-on: 1080 is a whole number of
-            // revolutions, so it lands showing the R.
             withAnimation(.easeOut(duration: 1.7)) { spin = 1080 }
             withAnimation(.spring(response: 0.75, dampingFraction: 0.68).delay(0.15)) {
                 fanned = true

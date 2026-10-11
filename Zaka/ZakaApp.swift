@@ -19,16 +19,9 @@ private enum SplashDefaults {
     }
 }
 
-/// Plays the splash over the app, once per install.
-///
-/// After the first run the animation is pure delay between the user and their
-/// expenses, so it is shown once and then stepped over. Deleting and
-/// reinstalling brings it back.
 private struct LaunchGate: View {
     @AppStorage(SplashDefaults.seenKey) private var hasSeenSplash = false
 
-    /// Seeded from the stored flag rather than set in `onAppear`, so a repeat
-    /// launch never flashes a frame of the splash before hiding it.
     @State private var showingSplash = !SplashDefaults.hasSeen
 
     var body: some View {

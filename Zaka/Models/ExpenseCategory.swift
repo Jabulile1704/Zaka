@@ -1,11 +1,5 @@
 import SwiftUI
 
-/// The fixed set of buckets an expense can fall into.
-///
-/// Stored on `Expense` as a raw string so the on-disk format survives
-/// reordering the cases here.
-// `nonisolated` so the SwiftData model, which is itself nonisolated, can read
-// these under the target's MainActor-by-default isolation.
 nonisolated enum ExpenseCategory: String, CaseIterable, Identifiable, Codable {
     case food
     case groceries

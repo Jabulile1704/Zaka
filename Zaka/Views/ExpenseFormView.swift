@@ -1,15 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// Creates a new expense, or edits an existing one when `editing` is non-nil.
-///
-/// In create mode this lives in the Add tab, so it resets itself after saving
-/// and reports back via `onFinish` so the tab bar can move on.
 struct ExpenseFormView: View {
     private enum Field { case amount, note }
 
     let editing: Expense?
-    /// False while this sits in an unselected tab. Sheets leave it at the default.
     var isActive: Bool = true
     let onFinish: () -> Void
 
@@ -74,8 +69,6 @@ struct ExpenseFormView: View {
         .sensoryFeedback(.success, trigger: saveCount)
     }
 
-    // MARK: - Pieces
-
     private var amountCard: some View {
         HStack(alignment: .firstTextBaseline, spacing: 3) {
             Text(Money.symbol)
@@ -102,7 +95,6 @@ struct ExpenseFormView: View {
                 .foregroundStyle(.secondary)
                 .padding(.leading, 8)
 
-            // The container lets neighbouring chips blend as the selection moves.
             GlassEffectContainer(spacing: 14) {
                 LazyVGrid(
                     columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4),
@@ -163,13 +155,9 @@ struct ExpenseFormView: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 26))
     }
 
-    // MARK: - Behaviour
-
-    /// Opens the keypad on arrival so a new expense is one tap from typed.
     private func focusAmount() {
         guard editing == nil, isActive, amountText.isEmpty else { return }
         Task {
-            // Wait for the tab transition to finish, or it swallows the focus.
             try? await Task.sleep(for: .milliseconds(500))
             guard isActive else { return }
             focus = .amount
@@ -178,7 +166,6 @@ struct ExpenseFormView: View {
 
     private func loadIfEditing() {
         guard let expense = editing else { return }
-        // Guard against re-seeding if the sheet's onAppear fires again.
         guard amountText.isEmpty else { return }
         amountText = String(format: "%.2f", expense.amount)
         category = expense.category

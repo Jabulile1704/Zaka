@@ -1,6 +1,5 @@
 import Foundation
 
-/// One calendar day's worth of expenses, newest day first.
 struct DayGroup: Identifiable {
     let day: Date
     let expenses: [Expense]
@@ -8,7 +7,6 @@ struct DayGroup: Identifiable {
     var id: Date { day }
     var total: Double { expenses.reduce(0) { $0 + $1.amount } }
 
-    /// "Today", "Yesterday", or "Mon 6 Oct".
     var title: String {
         let calendar = Calendar.current
         if calendar.isDateInToday(day) { return "Today" }
@@ -23,8 +21,6 @@ struct DayGroup: Identifiable {
         )
     }
 
-    /// Buckets expenses by calendar day, days descending and
-    /// expenses within a day newest first.
     static func group(_ expenses: [Expense]) -> [DayGroup] {
         let calendar = Calendar.current
         let buckets = Dictionary(grouping: expenses) {

@@ -1,13 +1,8 @@
 import SwiftUI
 
-/// The Zaka coin, drawn to the same 100-unit grid as the app icon.
-///
-/// `size` is the full width of the view; the coin itself fills 84% of it, the
-/// way the icon sits inside its tile.
 struct CoinMark: View {
     var size: CGFloat
     var palette: CoinPalette
-    /// Hidden while the coin shows its reverse mid-spin.
     var showsLetter: Bool = true
 
     private var unit: CGFloat { size / 100 }
@@ -18,7 +13,6 @@ struct CoinMark: View {
                 .fill(palette.ring)
                 .frame(width: 84 * unit, height: 84 * unit)
 
-            // The milled edge, banded inside the rim rather than spiking out of it.
             Circle()
                 .stroke(
                     palette.groove,
@@ -50,8 +44,6 @@ struct CoinMark: View {
     }
 }
 
-/// One stylised banknote. Not a reproduction of any real note — a coloured
-/// rectangle in the denomination's colour.
 struct NoteCard: View {
     var width: CGFloat
     var colour: Color
@@ -77,12 +69,6 @@ struct NoteCard: View {
     }
 }
 
-/// A coin turning about its vertical axis.
-///
-/// This is `Animatable` so that `body` is re-evaluated at every step of the
-/// turn. Reading the plain `@State` angle instead would give the *final*
-/// value for the whole animation, and the R would render mirrored through the
-/// half of each revolution that faces away.
 struct SpinningCoin: View, Animatable {
     var angle: Double
     var size: CGFloat
@@ -93,7 +79,6 @@ struct SpinningCoin: View, Animatable {
         set { angle = newValue }
     }
 
-    /// The rings are symmetric, so the reverse needs nothing but the R removed.
     private var facingUs: Bool {
         let turn = (angle.truncatingRemainder(dividingBy: 360) + 360)
             .truncatingRemainder(dividingBy: 360)

@@ -4,7 +4,6 @@ import SwiftData
 struct InsightsView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
 
-    /// 0 is the current month, -1 last month, and so on.
     @State private var monthOffset = 0
 
     var body: some View {
@@ -84,8 +83,6 @@ struct InsightsView: View {
         .padding(.bottom, 6)
     }
 
-    // MARK: - Figures
-
     private var monthStart: Date {
         let calendar = Calendar.current
         let thisMonth = calendar.dateInterval(of: .month, for: .now)?.start ?? .now
@@ -104,8 +101,6 @@ struct InsightsView: View {
         monthExpenses.reduce(0) { $0 + $1.amount }
     }
 
-    /// Averaged over days elapsed, so the current month isn't flattened by
-    /// days that haven't happened yet.
     private var dailyAverage: Double {
         let calendar = Calendar.current
         let daysInMonth = calendar.range(of: .day, in: .month, for: monthStart)?.count ?? 30

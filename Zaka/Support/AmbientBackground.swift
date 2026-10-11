@@ -1,10 +1,5 @@
 import SwiftUI
 
-/// A soft wash of colour behind every screen.
-///
-/// Liquid Glass is only legible when there is something for it to refract —
-/// over a flat grey it reads as a plain rounded rectangle. These blurred
-/// blobs give the glass layers something to pick up.
 struct AmbientBackground: View {
     @Environment(\.colorScheme) private var scheme
 

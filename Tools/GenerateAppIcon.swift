@@ -1,19 +1,6 @@
 #!/usr/bin/env swift
-//
-// Draws the Zaka app icon — a two-tone rand coin — straight to PNG.
-//
-// The icon is vector art with no source file to lose, so it lives here as
-// code: re-run this to regenerate the asset catalog after any tweak.
-//
-//     swift Tools/GenerateAppIcon.swift
-//
-// Geometry is written against a 100×100 grid, matching the design canvas, and
-// scaled up at draw time.
-
 import AppKit
 import Foundation
-
-// MARK: - Palette
 
 struct Palette {
     let groundTop: NSColor
@@ -72,13 +59,6 @@ extension NSColor {
     }
 }
 
-// MARK: - Drawing
-
-/// Renders the icon at `size` points square.
-///
-/// Core Graphics puts the origin bottom-left, so vertical positions are
-/// mirrored from the canvas design; the coin itself is centred and symmetric,
-/// so only the gradient and the gloss care.
 func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     let unit = size / 100
     let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -98,7 +78,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     context.setAllowsAntialiasing(true)
     context.interpolationQuality = .high
 
-    // Ground, top-left to bottom-right.
     if let gradient = CGGradient(
         colorsSpace: colorSpace,
         colors: [palette.groundTop.cgColor, palette.groundBottom.cgColor] as CFArray,
@@ -112,7 +91,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
         )
     }
 
-    // A soft gloss in the upper left, so the ground is not a flat slab.
     if let gloss = CGGradient(
         colorsSpace: colorSpace,
         colors: [
@@ -142,14 +120,10 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
         )
     }
 
-    // The coin body. Everything below stays inside this circle, so the
-    // silhouette is clean — the grooves are cut into the rim, not spikes
-    // sticking out of it.
     context.addPath(circle(radius: 42 * unit))
     context.setFillColor(palette.ring.cgColor)
     context.fillPath()
 
-    // Milled edge: a dashed stroke banded between r37.5 and r42.
     context.saveGState()
     context.addPath(circle(radius: 39.75 * unit))
     context.setStrokeColor(palette.ring.darkened(by: 0.26).cgColor)
@@ -158,7 +132,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     context.strokePath()
     context.restoreGState()
 
-    // The flat field the brass disc sits on.
     context.addPath(circle(radius: 37 * unit))
     context.setFillColor(palette.ring.lightened(by: 0.10).cgColor)
     context.fillPath()
@@ -168,7 +141,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     context.setLineWidth(1.2 * unit)
     context.strokePath()
 
-    // Inner disc — the brass part.
     context.addPath(circle(radius: 26 * unit))
     context.setFillColor(palette.centre.cgColor)
     context.fillPath()
@@ -178,7 +150,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     context.setLineWidth(1.5 * unit)
     context.strokePath()
 
-    // Separate the coin from the green ground.
     context.addPath(circle(radius: 42 * unit))
     context.setStrokeColor(palette.rimEdge.darkened(by: 0.3).withAlphaComponent(0.55).cgColor)
     context.setLineWidth(1.4 * unit)
@@ -192,8 +163,6 @@ func drawIcon(size: CGFloat, palette: Palette) -> CGImage {
     return image
 }
 
-/// Centres the R on its optical bounds rather than its baseline, so it sits
-/// dead centre in the brass disc at any size.
 func drawR(in context: CGContext, centre: CGPoint, pointSize: CGFloat, color: NSColor) {
     let base = NSFont.systemFont(ofSize: pointSize, weight: .heavy)
     let font = base.fontDescriptor
@@ -213,8 +182,6 @@ func drawR(in context: CGContext, centre: CGPoint, pointSize: CGFloat, color: NS
     )
     CTLineDraw(line, context)
 }
-
-// MARK: - Output
 
 func write(_ image: CGImage, to url: URL) {
     let rep = NSBitmapImageRep(cgImage: image)

@@ -3,7 +3,6 @@ import SwiftData
 
 @Model
 final class Expense {
-    /// Always positive — this app only tracks money going out.
     var amount: Double
     var categoryRaw: String
     var date: Date
@@ -25,7 +24,6 @@ final class Expense {
         !note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    /// What to show as the row's headline: the note if there is one, else the category.
     var title: String {
         hasNote ? note : category.label
     }

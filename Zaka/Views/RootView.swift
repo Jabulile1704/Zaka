@@ -13,8 +13,6 @@ struct RootView: View {
             }
 
             Tab("Add", systemImage: "plus", value: Screen.add) {
-                // `isActive` lets the form know when it is the visible tab, which
-                // is the only reliable moment to claim keyboard focus.
                 ExpenseFormView(editing: nil, isActive: selection == .add) {
                     selection = .expenses
                 }
@@ -31,7 +29,6 @@ struct RootView: View {
     }
 }
 
-/// The running month-to-date total, parked in the glass strip above the tab bar.
 private struct MonthTotalAccessory: View {
     @Query private var expenses: [Expense]
     @Environment(\.tabViewBottomAccessoryPlacement) private var placement
@@ -47,7 +44,6 @@ private struct MonthTotalAccessory: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 8) {
-                // Collapsed into the tab bar there is only room for the figure.
                 if placement != .inline {
                     Text("This month")
                         .foregroundStyle(.secondary)

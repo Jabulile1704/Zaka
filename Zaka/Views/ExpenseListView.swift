@@ -88,8 +88,6 @@ private struct ExpenseRow: View {
                 Text(expense.title)
                     .font(.body)
                     .lineLimit(1)
-                // The icon already says which category it is, so only spell it
-                // out when the headline is a note instead.
                 if expense.hasNote {
                     Text(expense.category.label)
                         .font(.caption)

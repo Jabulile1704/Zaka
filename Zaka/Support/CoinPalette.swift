@@ -1,7 +1,6 @@
 import SwiftUI
 
 extension Color {
-    /// `Color(hex: "D8AC3E")` — six hex digits, no alpha.
     init(hex: String) {
         var value: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&value)
@@ -14,8 +13,6 @@ extension Color {
     }
 }
 
-/// The two-tone rand coin, in the same values the app icon is drawn with
-/// (`Tools/GenerateAppIcon.swift`). Keep the two in step.
 struct CoinPalette {
     let ring: Color
     let groove: Color
@@ -44,7 +41,6 @@ struct CoinPalette {
     }
 }
 
-/// Banknote colours, following the rand denominations.
 enum NotePalette {
     static func colours(_ scheme: ColorScheme) -> [Color] {
         scheme == .dark
