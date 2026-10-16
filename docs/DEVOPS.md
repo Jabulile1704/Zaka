@@ -12,11 +12,14 @@ to `main`, every pull request, and on demand.
 
 | Job | Does | Fails when |
 | --- | --- | --- |
-| **Logic tests** | `swift test` | Amount parsing or EAN-13 encoding breaks |
-| **Build for iOS Simulator** | `xcodebuild build`, unsigned | The app stops compiling |
+| **Logic tests** | `swift test` — 11 tests | Amount parsing or EAN-13 encoding breaks |
+| **App tests on a simulator** | `xcodebuild test` — 17 tests | The app stops compiling, or the model, grouping, CSV or card logic breaks |
 
-Both run on `macos-latest`. The build job signs nothing
-(`CODE_SIGNING_ALLOWED=NO`), so it needs no certificates in the repository.
+Both run on `macos-latest` and sign nothing (`CODE_SIGNING_ALLOWED=NO`), so
+no certificates live in the repository.
+
+The simulator is chosen at run time from whatever the image provides rather
+than hardcoded, so a runner image refresh does not break the build.
 
 **Known risk:** the app targets iOS 26 and uses Liquid Glass. If the runner
 image ships an older Xcode, the build job fails for want of the SDK rather

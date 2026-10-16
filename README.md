@@ -25,10 +25,12 @@ xcodebuild -project Zaka.xcodeproj -scheme Zaka \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 ```
 
-Logic tests run without Xcode:
+Tests:
 
 ```bash
-swift test
+swift test          # pure logic, no simulator needed
+xcodebuild test -project Zaka.xcodeproj -scheme Zaka \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
 Requires **iOS 26** or later — the UI is built on Liquid Glass

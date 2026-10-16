@@ -67,18 +67,30 @@ raw data where the others do not.
 
 Now automated:
 
+**28 tests across two suites.**
+
+`swift test` — pure logic, no simulator needed:
+
 | Area | Coverage |
 | --- | --- |
-| Amount parsing | `MoneyTests` — separators, grouping, partial input, rejection |
-| EAN-13 barcodes | `EAN13Tests` — check digits, guards, encode/decode round trip |
-| Everything else | None |
+| Amount parsing | Separators, grouping, partial input, rejection |
+| EAN-13 barcodes | Check digits, guards, encode/decode round trip |
 
-Run with `swift test`. The tests compile the app's own source files, so there
-is no second copy to drift.
+`xcodebuild test` — needs the app and a simulator:
 
-**Gap:** no coverage of the SwiftUI views, the SwiftData layer or the CSV
-export. The camera scanner cannot be tested in the simulator at all. Tracked
-in [#20](../../issues/20).
+| Area | Coverage |
+| --- | --- |
+| Category mapping | Live values, retired values, unknown fallback, uniqueness |
+| SwiftData | Round trip through an in-memory store, reads do not rewrite |
+| Day grouping | Bucketing, per-day totals, newest first |
+| CSV export | Ordering, header, number format, awkward notes, filename |
+| Loyalty cards | Symbology detection, acceptance, last four, raw round trip |
+
+Both suites compile the app's own source, so there is no second copy to
+drift.
+
+**Gap:** the SwiftUI views themselves have no coverage — no UI tests — and
+the camera scanner cannot run in the simulator at all.
 
 ## 5. Deployment
 

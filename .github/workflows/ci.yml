@@ -23,8 +23,8 @@ jobs:
       - name: Run tests
         run: swift test
 
-  build:
-    name: Build for iOS Simulator
+  app-tests:
+    name: App tests on a simulator
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,13 +34,21 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks | grep -i iphone || true
 
-      - name: Build
+      - name: Pick a simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available --json \
+            | python3 -c 'import json,sys; ds=json.load(sys.stdin)["devices"]; print(next(d["udid"] for rt in sorted(ds) if "iOS" in rt for d in ds[rt] if d.get("isAvailable") and "iPhone" in d["name"]))')
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl list devices available | grep -A1 "iOS" | head -5
+
+      - name: Test
         run: |
           set -o pipefail
-          xcodebuild build \
+          xcodebuild test \
             -project Zaka.xcodeproj \
             -scheme Zaka \
             -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO

@@ -118,14 +118,19 @@ asynchronous inside CloudKit, `try?` around `ModelContainer` never sees it.
 A runtime fallback cannot work here, so the decision is made at compile time
 with `ZAKA_CLOUDKIT`.
 
-### Tests live in a Swift package, not an Xcode test target
+### Two test suites, not one
 
-`this commit` · [#20](../../issues/20)
+`10bbc5b`, `this commit` · [#20](../../issues/20)
 
-Adding a test target means hand-editing `project.pbxproj`, which is fiddly
-and easy to break. A package compiles the app's own `EAN13.swift` and
-`Money.swift` directly — one source of truth, no copy to drift — and runs
-anywhere with `swift test`.
+The Swift package suite covers pure logic and runs anywhere with
+`swift test` — no simulator, no Xcode, seconds to run. Keep new pure logic
+here.
 
-The cost is that only pure logic is covered. Views, SwiftData and the CSV
-export are still untested.
+The Xcode suite covers what needs the app: SwiftData, day grouping, CSV
+export over real models, loyalty cards. It needs a simulator and is slower.
+
+The test target runs with `SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated`
+while the app runs MainActor-by-default. Without that, every `XCTestCase`
+subclass inherits MainActor and fails to compile, because its initialisers
+no longer match the nonisolated ones they override. Test methods that touch
+MainActor-isolated app types are marked `@MainActor` individually.
