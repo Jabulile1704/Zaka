@@ -30,8 +30,8 @@ struct ExpenseFormView: View {
             ScrollView {
                 VStack(spacing: 18) {
                     amountCard
-                    categorySection
                     detailsCard
+                    categorySection
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 4)
