@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  logic-tests:
+    name: Logic tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: swift --version
+
+      - name: Run tests
+        run: swift test
+
+  build:
+    name: Build for iOS Simulator
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain and SDKs
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphone || true
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Zaka.xcodeproj \
+            -scheme Zaka \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO

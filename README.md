@@ -3,6 +3,19 @@
 A personal expense tracker for iPhone. Everything is stored on the device —
 no account, no network, nothing leaves the phone.
 
+[![CI](https://github.com/Jabulile1704/Zaka/actions/workflows/ci.yml/badge.svg)](https://github.com/Jabulile1704/Zaka/actions/workflows/ci.yml)
+
+## Documentation
+
+| Document | What's in it |
+| --- | --- |
+| [docs/SDLC.md](docs/SDLC.md) | Each lifecycle phase, what was done and what was skipped |
+| [docs/DEVOPS.md](docs/DEVOPS.md) | Pipeline, environments, deploying to the phone, backups |
+| [docs/DECISIONS.md](docs/DECISIONS.md) | Why the non-obvious code is the way it is |
+
+Work is tracked as [issues](https://github.com/Jabulile1704/Zaka/issues).
+Closed ones carry a comment naming the commits that delivered them.
+
 ## Running it
 
 Open `Zaka.xcodeproj` in Xcode and press Run, or from the terminal:
@@ -10,6 +23,12 @@ Open `Zaka.xcodeproj` in Xcode and press Run, or from the terminal:
 ```bash
 xcodebuild -project Zaka.xcodeproj -scheme Zaka \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+```
+
+Logic tests run without Xcode:
+
+```bash
+swift test
 ```
 
 Requires **iOS 26** or later — the UI is built on Liquid Glass
