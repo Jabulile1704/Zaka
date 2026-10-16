@@ -13,7 +13,7 @@ struct ZakaApp: App {
     }
 
     private static func makeContainer() -> ModelContainer {
-        let schema = Schema([Expense.self])
+        let schema = Schema([Expense.self, LoyaltyCard.self])
 
         #if ZAKA_CLOUDKIT
         let synced = ModelConfiguration(

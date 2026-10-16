@@ -27,6 +27,7 @@ A free account works; the build expires after 7 days and needs a re-install.
 | **Expenses** | Everything you've logged, grouped by day with a per-day total. Tap a row to edit, swipe to delete. |
 | **Add** | Amount, one of sixteen categories, date, optional note. |
 | **Insights** | Month total, spend per day so far, and a share-of-spend bar per category. Step back through previous months. |
+| **Cards** | Shop loyalty cards. Tap one for a full-screen barcode to hold at the till. |
 
 The share button on **Expenses** exports everything as CSV — mail it to
 yourself, drop it in Files, open it in Numbers. Columns are
@@ -133,3 +134,22 @@ Every property on `Expense` carries a default value, which CloudKit requires
 — it has no concept of a non-optional column without one. That change is
 already committed and migrates an existing local store in place, verified
 with data present.
+
+## Cards
+
+Loyalty cards only — store name, card number and a barcode. No payment card
+numbers: the store is unencrypted SQLite, so anything in it is readable from
+an unlocked phone or a device backup.
+
+Numbers can be typed or scanned with the camera (VisionKit). Scanning needs
+real hardware and does nothing in the simulator, where the sheet says so
+rather than showing a dead viewfinder.
+
+EAN-13 is drawn by hand in `EAN13.swift` and rendered as vector bars, so it
+stays sharp at any size — Core Image has no EAN-13 generator, and a scaled
+bitmap barcode scans badly. Code 128 and QR come from Core Image. The type is
+detected from the number as you type: a valid 13-digit code picks EAN-13,
+anything else Code 128. You can override it.
+
+Opening a card turns screen brightness to full and restores it on the way
+out, since till scanners struggle with a dim screen.

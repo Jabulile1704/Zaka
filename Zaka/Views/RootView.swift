@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct RootView: View {
-    enum Screen: Hashable { case expenses, add, insights }
+    enum Screen: Hashable { case expenses, add, insights, cards }
 
     @State private var selection: Screen = .expenses
 
@@ -20,6 +20,10 @@ struct RootView: View {
 
             Tab("Insights", systemImage: "chart.bar.fill", value: Screen.insights) {
                 InsightsView()
+            }
+
+            Tab("Cards", systemImage: "creditcard.fill", value: Screen.cards) {
+                CardListView()
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
