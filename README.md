@@ -12,6 +12,7 @@ no account, no network, nothing leaves the phone.
 | [docs/SDLC.md](docs/SDLC.md) | Each lifecycle phase, what was done and what was skipped |
 | [docs/DEVOPS.md](docs/DEVOPS.md) | Pipeline, environments, deploying to the phone, backups |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Why the non-obvious code is the way it is |
+| [docs/WORKFLOW.md](docs/WORKFLOW.md) | Branching, commits and pull requests |
 
 Work is tracked as [issues](https://github.com/Jabulile1704/Zaka/issues).
 Closed ones carry a comment naming the commits that delivered them.
