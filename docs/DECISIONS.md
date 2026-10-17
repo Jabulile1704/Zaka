@@ -150,3 +150,19 @@ between launches.
 The grouping lives in its own type rather than in the view so it can be
 tested: ordering, ties, the merge boundary, totals surviving the merge,
 and the degenerate cases of an empty month or a zero limit.
+
+### The pie reveal waits one frame before animating
+
+`this commit` · [#21](../../issues/21)
+
+`RevealingDonut` is `Animatable` so `body` re-runs at every step of the
+sweep — the same reason `SpinningCoin` is.
+
+That alone was not enough. Setting `reveal = 0` and then animating to 1 in
+the same pass meant SwiftUI never rendered a frame at zero, so it had
+nothing to animate from and the donut snapped straight to full. A 32 ms
+sleep before the animation gives it that first frame.
+
+Caught by temporarily stretching the animation to sixty seconds and
+screenshotting mid-flight. At the real duration the snap is invisible —
+it just looks like a chart that appears.

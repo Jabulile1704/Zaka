@@ -80,3 +80,35 @@ final class SpendBreakdownTests: XCTestCase {
         XCTAssertEqual(slice.share(of: 0), 0, "no division by zero on an empty month")
     }
 }
+
+extension SpendBreakdownTests {
+    func testSweepAlwaysFillsTheCircle() {
+        let slices = [
+            SpendSlice(category: .rent, amount: 300),
+            SpendSlice(category: .wifi, amount: 100)
+        ]
+        for progress in [0.0, 0.1, 0.5, 0.99, 1.0] {
+            let (drawn, remainder) = SpendBreakdown.sweep(slices, progress: progress)
+            XCTAssertEqual(drawn.reduce(0, +) + remainder, 400, accuracy: 0.0001,
+                           "the donut must stay a full circle at progress \(progress)")
+        }
+    }
+
+    func testSweepStartsEmptyAndEndsComplete() {
+        let slices = [SpendSlice(category: .rent, amount: 300)]
+
+        let start = SpendBreakdown.sweep(slices, progress: 0)
+        XCTAssertEqual(start.drawn, [0])
+        XCTAssertEqual(start.remainder, 300)
+
+        let end = SpendBreakdown.sweep(slices, progress: 1)
+        XCTAssertEqual(end.drawn, [300])
+        XCTAssertEqual(end.remainder, 0, accuracy: 0.0001)
+    }
+
+    func testSweepClampsOutOfRangeProgress() {
+        let slices = [SpendSlice(category: .rent, amount: 300)]
+        XCTAssertEqual(SpendBreakdown.sweep(slices, progress: -2).drawn, [0])
+        XCTAssertEqual(SpendBreakdown.sweep(slices, progress: 5).drawn, [300])
+    }
+}

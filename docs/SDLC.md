@@ -67,7 +67,7 @@ raw data where the others do not.
 
 Now automated:
 
-**37 tests across two suites.**
+**40 tests across two suites.**
 
 `swift test` — pure logic, no simulator needed:
 

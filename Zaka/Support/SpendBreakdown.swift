@@ -60,4 +60,11 @@ nonisolated enum SpendBreakdown {
             )
         ]
     }
+
+    static func sweep(_ slices: [SpendSlice], progress: Double) -> (drawn: [Double], remainder: Double) {
+        let clamped = min(max(progress, 0), 1)
+        let total = slices.reduce(0) { $0 + $1.amount }
+        let drawn = slices.map { $0.amount * clamped }
+        return (drawn, total - drawn.reduce(0, +))
+    }
 }
