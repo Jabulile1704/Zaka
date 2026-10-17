@@ -34,18 +34,8 @@ struct ZakaApp: App {
     }
 }
 
-private enum SplashDefaults {
-    static let seenKey = "hasSeenSplash"
-
-    static var hasSeen: Bool {
-        UserDefaults.standard.bool(forKey: seenKey)
-    }
-}
-
 private struct LaunchGate: View {
-    @AppStorage(SplashDefaults.seenKey) private var hasSeenSplash = false
-
-    @State private var showingSplash = !SplashDefaults.hasSeen
+    @State private var showingSplash = true
 
     var body: some View {
         ZStack {
@@ -60,7 +50,6 @@ private struct LaunchGate: View {
     }
 
     private func dismissSplash() {
-        hasSeenSplash = true
         withAnimation(.easeOut(duration: 0.45)) { showingSplash = false }
     }
 }

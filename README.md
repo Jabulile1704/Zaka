@@ -111,17 +111,12 @@ screens are static by definition — the system draws them before any app code
 runs — so `UILaunchScreen` is just a flat colour (`LaunchBackground`, matching
 the splash), and `SplashView` animates on top of it once the app is up.
 
-It plays **once per install**. After that it is pure delay between you and
-your expenses, so `LaunchGate` records a `hasSeenSplash` flag and steps over
-it on every later launch. Deleting and reinstalling brings it back; so does
+It plays on **every cold launch**. Returning from the background is not a
+launch and does not replay it.
 
-```bash
-xcrun simctl spawn booted defaults delete com.jabulile.zaka hasSeenSplash
-```
-
-on a simulator. The local store opens instantly, so the animation never
-covers real work: it is tap-to-skip, its length is `duration` on
-`SplashView`, and it reduces to a plain fade when Reduce Motion is on.
+The local store opens instantly, so the animation never covers real work: it
+is tap-to-skip, its length is `duration` on `SplashView`, and it reduces to a
+plain fade when Reduce Motion is on.
 
 ## iCloud sync
 
