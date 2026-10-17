@@ -134,3 +134,19 @@ while the app runs MainActor-by-default. Without that, every `XCTestCase`
 subclass inherits MainActor and fails to compile, because its initialisers
 no longer match the nonisolated ones they override. Test methods that touch
 MainActor-isolated app types are marked `@MainActor` individually.
+
+### The pie chart groups small categories instead of drawing them all
+
+`this commit` · [#21](../../issues/21)
+
+Sixteen categories would be sixteen slices, several of them a pixel wide
+and none of them readable. `SpendBreakdown` keeps the largest five and
+merges the rest into one slice labelled `+N more`.
+
+Ties sort by category name, not by dictionary order, so the same data
+always produces the same chart. Without that the slices would shuffle
+between launches.
+
+The grouping lives in its own type rather than in the view so it can be
+tested: ordering, ties, the merge boundary, totals surviving the merge,
+and the degenerate cases of an empty month or a zero limit.

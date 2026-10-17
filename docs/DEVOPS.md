@@ -13,7 +13,7 @@ to `main`, every pull request, and on demand.
 | Job | Does | Fails when |
 | --- | --- | --- |
 | **Logic tests** | `swift test` — 11 tests | Amount parsing or EAN-13 encoding breaks |
-| **App tests on a simulator** | `xcodebuild test` — 17 tests | The app stops compiling, or the model, grouping, CSV or card logic breaks |
+| **App tests on a simulator** | `xcodebuild test` — 26 tests | The app stops compiling, or the model, grouping, CSV or card logic breaks |
 
 Both run on `macos-latest` and sign nothing (`CODE_SIGNING_ALLOWED=NO`), so
 no certificates live in the repository.

@@ -5,6 +5,7 @@ struct InsightsView: View {
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
 
     @State private var monthOffset = 0
+    @AppStorage("insightsShowsPie") private var showsPie = false
 
     var body: some View {
         NavigationStack {
@@ -42,16 +43,35 @@ struct InsightsView: View {
                 .listRowBackground(Rectangle().fill(.regularMaterial))
             }
 
-            Section("By category") {
-                ForEach(breakdown, id: \.category) { row in
-                    CategoryBar(row: row, total: total)
+            Section {
+                if showsPie {
+                    SpendPieChart(slices: slices, total: total)
                         .listRowBackground(Rectangle().fill(.regularMaterial))
+                } else {
+                    ForEach(breakdown, id: \.category) { row in
+                        CategoryBar(row: row, total: total)
+                            .listRowBackground(Rectangle().fill(.regularMaterial))
+                    }
                 }
+            } header: {
+                HStack {
+                    Text("By category")
+                    Spacer()
+                    Picker("Breakdown style", selection: $showsPie) {
+                        Image(systemName: "chart.bar.fill").tag(false)
+                        Image(systemName: "chart.pie.fill").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .frame(width: 96)
+                }
+                .textCase(nil)
             }
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .animation(.snappy(duration: 0.35), value: monthOffset)
+        .animation(.snappy(duration: 0.3), value: showsPie)
     }
 
     private var monthPicker: some View {
@@ -110,9 +130,17 @@ struct InsightsView: View {
         return total / Double(max(1, days))
     }
 
+    private var categoryTotals: [ExpenseCategory: Double] {
+        SpendBreakdown.totals(for: monthExpenses)
+    }
+
+    private var slices: [SpendSlice] {
+        SpendBreakdown.slices(from: categoryTotals)
+    }
+
     private var breakdown: [CategoryTotal] {
-        Dictionary(grouping: monthExpenses, by: \.category)
-            .map { CategoryTotal(category: $0.key, amount: $0.value.reduce(0) { $0 + $1.amount }) }
+        categoryTotals
+            .map { CategoryTotal(category: $0.key, amount: $0.value) }
             .sorted { $0.amount > $1.amount }
     }
 }

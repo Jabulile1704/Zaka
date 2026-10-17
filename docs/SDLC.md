@@ -67,7 +67,7 @@ raw data where the others do not.
 
 Now automated:
 
-**28 tests across two suites.**
+**37 tests across two suites.**
 
 `swift test` — pure logic, no simulator needed:
 
@@ -85,6 +85,7 @@ Now automated:
 | Day grouping | Bucketing, per-day totals, newest first |
 | CSV export | Ordering, header, number format, awkward notes, filename |
 | Loyalty cards | Symbology detection, acceptance, last four, raw round trip |
+| Spend breakdown | Slice grouping, ordering, ties, totals preserved, degenerate input |
 
 Both suites compile the app's own source, so there is no second copy to
 drift.
