@@ -1,0 +1,70 @@
+name: Release
+
+# Pushing a tag like v1.0.0 runs the whole test suite, builds the app and
+# publishes a GitHub Release with notes generated from the merged pull
+# requests.
+#
+# What this does NOT do is put the app on a phone or the App Store. That
+# needs a signing certificate from the paid Apple Developer Program, which
+# this project does not have. The build published here is unsigned and runs
+# only in the iOS Simulator. Signing and a TestFlight upload belong after the
+# build step once the account exists.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  tests:
+    name: Tests
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Build and publish
+    needs: tests
+    runs-on: macos-latest
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag must match the app version
+        run: |
+          version=$(xcodebuild -project Zaka.xcodeproj -target Zaka -showBuildSettings 2>/dev/null \
+            | awk '/ MARKETING_VERSION = /{print $3}')
+          echo "tag $TAG, app version $version"
+          case "${TAG#v}" in
+            "$version"|"$version".*) ;;
+            *) echo "::error::Tag $TAG does not match MARKETING_VERSION $version. Bump the version in the project first."; exit 1 ;;
+          esac
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Zaka.xcodeproj \
+            -scheme Zaka \
+            -configuration Release \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Package
+        run: |
+          cd build/Build/Products/Release-iphonesimulator
+          ditto -c -k --keepParent Zaka.app "$GITHUB_WORKSPACE/Zaka-$TAG-simulator.zip"
+          shasum -a 256 "$GITHUB_WORKSPACE/Zaka-$TAG-simulator.zip"
+
+      - name: Publish
+        run: |
+          gh release create "$TAG" "Zaka-$TAG-simulator.zip" \
+            --title "Zaka ${TAG#v}" \
+            --generate-notes \
+            --notes "Unsigned build for the iOS Simulator. It cannot be installed on a phone: device and App Store builds need the paid Apple Developer Program.
+
+          Drag \`Zaka.app\` from the zip onto a booted iOS 26 simulator to run it."

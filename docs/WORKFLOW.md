@@ -60,6 +60,25 @@ individual commits genuinely matter to later readers.
 
 Delete the branch on merge. `gh pr merge --squash --delete-branch` does both.
 
+## The board
+
+Every change starts as an issue and the pull request body says `Closes #N`.
+That one line is what moves the card: In Review when the pull request opens,
+Testing when CI passes, Done on merge.
+
+Move the card to In Progress yourself when you cut the branch, and give it a
+Sprint. See [DEVOPS.md](DEVOPS.md#project-board).
+
+## Releasing
+
+Bump `MARKETING_VERSION` in a pull request, merge it, then tag `main`:
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
+
+The release workflow refuses a tag that does not match the app version.
+
 ## When to skip the branch
 
 Pushing straight to `main` is defensible for a typo in a document or a
