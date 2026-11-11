@@ -64,18 +64,17 @@ private struct BarcodeUnavailable: View {
 
 nonisolated enum GeneratedBarcode {
     static func image(for number: String, symbology: BarcodeSymbology) -> CGImage? {
-        guard let data = number.data(using: .ascii) else { return nil }
-
         let output: CIImage?
         switch symbology {
         case .code128:
+            guard let data = number.data(using: .ascii) else { return nil }
             let filter = CIFilter.code128BarcodeGenerator()
             filter.message = data
             filter.quietSpace = 8
             output = filter.outputImage
         case .qr:
             let filter = CIFilter.qrCodeGenerator()
-            filter.message = data
+            filter.message = Data(number.utf8)
             filter.correctionLevel = "M"
             output = filter.outputImage
         case .ean13:
