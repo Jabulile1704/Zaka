@@ -26,12 +26,60 @@ image ships an older Xcode, the build job fails for want of the SDK rather
 than for anything wrong with the code. Both jobs print their toolchain
 version first so that failure is obvious rather than mysterious.
 
+## Releases
+
+[`.github/workflows/release.yml`](../.github/workflows/release.yml) runs when
+a tag like `v1.0.0` is pushed:
+
+1. Runs the whole CI workflow — both test suites — by calling it, not by
+   copying it.
+2. Checks the tag against `MARKETING_VERSION`. `v1.1.0` on a 1.0 app fails
+   here, before anything is built.
+3. Builds a Release configuration for the simulator and zips it.
+4. Publishes a GitHub Release with notes generated from merged pull requests.
+
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+**This is delivery, not deployment.** The published build is unsigned and
+runs only in the simulator. Putting it on a phone or the App Store needs a
+certificate from the paid Apple Developer Program; signing and a TestFlight
+upload slot in after the build step once the account exists.
+
+## Project board
+
+The [board](https://github.com/users/Jabulile1704/projects/6) has six
+columns and a Sprint field with one-week iterations.
+
+| Column | Meaning | Moved by |
+| --- | --- | --- |
+| Backlog | Known work, not yet shaped | Automation, when an issue opens |
+| Ready | Shaped and unblocked | Hand |
+| In Progress | On a branch | Hand |
+| In Review | Pull request open | Automation |
+| Testing | CI green, being checked on a device | Automation |
+| Done | Merged to `main` | Automation |
+
+[`.github/workflows/board.yml`](../.github/workflows/board.yml) makes the
+automated moves. It finds a pull request's issues from `Closes #N` in the
+body, so that line is what ties a pull request to its card.
+
+It needs a repository secret named `PROJECT_TOKEN`: a personal access token
+with the `project` scope. The built-in `GITHUB_TOKEN` cannot write to a
+user-level project. **Without the secret every job skips rather than
+fails**, and the board has to be moved by hand:
+
+```bash
+.github/scripts/board-status.sh 24 "In Review"
+```
+
 ## What is not automated
 
 | Stage | State | Why |
 | --- | --- | --- |
 | Install to device | Manual `devicectl` over USB | Free account; no TestFlight |
-| Release | None | Not on the App Store |
+| App Store release | None | Not on the App Store; GitHub Releases are automated |
 | Versioning | Manual in the project | One user, no release cadence |
 | Crash reporting | None | No backend, nothing phones home |
 | Monitoring | None | No server to monitor |

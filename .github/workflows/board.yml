@@ -1,0 +1,105 @@
+name: Project board
+
+# Keeps the board in step with what actually happened:
+#
+#   issue opened or reopened          -> Backlog
+#   pull request opened               -> In Review   (the issues it closes)
+#   CI passes on that pull request    -> Testing
+#   pull request merged, issue closed -> Done
+#
+# Ready and In Progress are judgement calls and stay manual.
+#
+# Needs a PROJECT_TOKEN secret with the `project` scope. Without it every job
+# is skipped rather than failed, since GITHUB_TOKEN cannot write to a
+# user-level project.
+
+on:
+  issues:
+    types: [opened, reopened, closed]
+  pull_request:
+    types: [opened, reopened, ready_for_review, closed]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+env:
+  GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+  REPO: ${{ github.repository }}
+
+jobs:
+  issue:
+    name: Issue moved
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        if: env.GH_TOKEN != ''
+
+      - name: Set status
+        if: env.GH_TOKEN != ''
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          ACTION: ${{ github.event.action }}
+        run: |
+          if [ "$ACTION" = "closed" ]; then status="Done"; else status="Backlog"; fi
+          .github/scripts/board-status.sh "$NUMBER" "$status"
+
+  pull-request:
+    name: Pull request moved
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        if: env.GH_TOKEN != ''
+
+      - name: Move the issues this pull request closes
+        if: env.GH_TOKEN != ''
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          ACTION: ${{ github.event.action }}
+          MERGED: ${{ github.event.pull_request.merged }}
+        run: |
+          if [ "$ACTION" != "closed" ]; then status="In Review"
+          elif [ "$MERGED" = "true" ]; then status="Done"
+          else status="Ready"; fi
+
+          issues=$(.github/scripts/closing-issues.sh <<< "$BODY")
+          if [ -z "$issues" ]; then issues="$NUMBER"; fi
+
+          for issue in $issues; do
+            .github/scripts/board-status.sh "$issue" "$status"
+          done
+
+  ci-passed:
+    name: CI passed on a pull request
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        if: env.GH_TOKEN != ''
+
+      - name: Move to Testing
+        if: env.GH_TOKEN != ''
+        env:
+          NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          if [ -z "$NUMBER" ]; then echo "No pull request on this run"; exit 0; fi
+
+          state=$(gh api "repos/$REPO/pulls/$NUMBER" --jq '.state')
+          if [ "$state" != "open" ]; then echo "Pull request is $state"; exit 0; fi
+
+          issues=$(gh api "repos/$REPO/pulls/$NUMBER" --jq '.body // ""' | .github/scripts/closing-issues.sh)
+          if [ -z "$issues" ]; then issues="$NUMBER"; fi
+
+          for issue in $issues; do
+            .github/scripts/board-status.sh "$issue" "Testing"
+          done
