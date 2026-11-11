@@ -168,5 +168,10 @@ bitmap barcode scans badly. Code 128 and QR come from Core Image. The type is
 detected from the number as you type: a valid 13-digit code picks EAN-13,
 anything else Code 128. You can override it.
 
+A card can be shown either way: a switch on the card screen flips between the
+linear barcode and a QR code of the same number. It opens in whichever form
+the card was saved as. The QR is the number as plain text — whether a till
+takes it is up to the retailer, so the barcode remains the default.
+
 Opening a card turns screen brightness to full and restores it on the way
 out, since till scanners struggle with a dim screen.

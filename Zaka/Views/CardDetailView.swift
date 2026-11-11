@@ -6,6 +6,15 @@ struct CardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var previousBrightness: CGFloat?
     @State private var editing = false
+    @State private var mode: CardDisplayMode = .barcode
+
+    private var modes: [CardDisplayMode] {
+        CardDisplayMode.available(for: card.number, savedAs: card.symbology)
+    }
+
+    private var shown: BarcodeSymbology {
+        mode.symbology(for: card.number, savedAs: card.symbology)
+    }
 
     var body: some View {
         NavigationStack {
@@ -18,14 +27,27 @@ struct CardDetailView: View {
                     VStack(spacing: 6) {
                         Text(card.name)
                             .font(.system(size: 26, weight: .bold, design: .rounded))
-                        Text(card.symbology.label)
+                        Text(shown.label)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                            .contentTransition(.opacity)
+                    }
+
+                    if modes.count > 1 {
+                        Picker("Show as", selection: $mode) {
+                            ForEach(modes) { option in
+                                Label(option.label, systemImage: option.symbol).tag(option)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal, 56)
                     }
 
                     VStack(spacing: 16) {
-                        BarcodeView(number: card.number, symbology: card.symbology)
-                            .frame(height: card.symbology == .qr ? 240 : 130)
+                        BarcodeView(number: card.number, symbology: shown)
+                            .frame(height: shown == .qr ? 240 : 140)
+                            .id(shown)
+                            .transition(.opacity.combined(with: .scale(scale: 0.94)))
 
                         Text(card.number)
                             .font(.system(size: 17, weight: .medium, design: .monospaced))
@@ -57,8 +79,13 @@ struct CardDetailView: View {
                 CardFormView(editing: card) { editing = false }
             }
         }
-        .onAppear(perform: brighten)
+        .onAppear {
+            mode = .initial(for: card.number, savedAs: card.symbology)
+            brighten()
+        }
         .onDisappear(perform: restore)
+        .animation(.snappy(duration: 0.28), value: mode)
+        .sensoryFeedback(.selection, trigger: mode)
     }
 
     private func brighten() {

@@ -166,3 +166,20 @@ sleep before the animation gives it that first frame.
 Caught by temporarily stretching the animation to sixty seconds and
 screenshotting mid-flight. At the real duration the snap is invisible —
 it just looks like a chart that appears.
+
+### A card saved as a barcode still opens as a barcode
+
+`feat/card-qr-toggle` · [#24](../../issues/24)
+
+Any card can now be shown as a QR code, but the QR is only the card number
+as text. Retail tills are set up for the linear barcode printed on the card,
+and nothing guarantees they accept a QR of the same digits. So QR is an
+option, never the default, unless the card was saved as QR.
+
+`CardDisplayMode` decides what is offered. A card saved as QR gets its
+linear type inferred from the number; a number that cannot be drawn one way
+does not offer that way; and a card deliberately saved as Code 128 is not
+promoted to EAN-13 just because its digits happen to validate.
+
+QR generation encodes UTF-8. It used ASCII before, which silently produced
+no image for any card number containing a non-ASCII character.
