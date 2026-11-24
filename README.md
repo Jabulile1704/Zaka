@@ -5,6 +5,20 @@ no account, no network, nothing leaves the phone.
 
 [![CI](https://github.com/Jabulile1704/Zaka/actions/workflows/ci.yml/badge.svg)](https://github.com/Jabulile1704/Zaka/actions/workflows/ci.yml)
 
+## What it looks like
+
+| Expenses | Add | Insights |
+|:--:|:--:|:--:|
+| <img src="docs/screenshots/expenses.png" width="230" alt="A list of expenses grouped by day. Each day has a heading with its own total, and each row shows a coloured category icon, the note, the category and the amount in rand."> | <img src="docs/screenshots/add.png" width="230" alt="The add-expense form. A large rand amount field at the top, then date and note, then a grid of sixteen category chips with Takeaways selected. The decimal keypad is open."> | <img src="docs/screenshots/insights-pie.png" width="230" alt="Monthly insights. The month total of R8,568 above a donut chart, with a legend listing Rent at 37 percent, Groceries at 14 percent and Shopping at 10 percent."> |
+| Every expense, grouped by day with a running total per day. Tap a row to edit, swipe to delete. The strip above the tab bar always shows the month to date. | Amount, date, note and one of sixteen categories. That is the whole of data entry; the amount field takes focus as the screen opens. | Month total, spend per day so far, and where the money went. Step back through previous months with the arrows. |
+
+| By category | Cards | Barcode or QR |
+|:--:|:--:|:--:|
+| <img src="docs/screenshots/insights-bars.png" width="230" alt="The same insights screen with the bar view selected instead of the donut. Each category has a coloured icon, its total, its share as a percentage, and a horizontal bar."> | <img src="docs/screenshots/cards.png" width="230" alt="A list of four saved shop loyalty cards, each with a coloured card tile, the store name and the last four digits of the card number."> | <img src="docs/screenshots/card-barcode.png" width="150" alt="A loyalty card shown full screen as an EAN-13 barcode, with a Barcode and QR code switch above it and the card number printed underneath."> <img src="docs/screenshots/card-qr.png" width="150" alt="The same loyalty card shown as a QR code instead, with the QR code option selected on the switch."> |
+| The same breakdown as bars rather than a donut. The choice is remembered. Sixteen categories would be sixteen unreadable slices, so the pie keeps the largest five and merges the rest. | Shop cards, so the plastic can stay at home. Add them by typing the number or scanning the barcode with the camera. | Tap a card for a full-screen code, and switch between the linear barcode and a QR of the same number. Screen brightness goes to full so the till scanner can read it. |
+
+All screenshots use seeded demo data.
+
 ## Documentation
 
 | Document | What's in it |
